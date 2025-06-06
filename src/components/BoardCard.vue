@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick } from "vue";
+import { ref, computed, nextTick, onMounted } from "vue";
 import { Card } from "@/modules/board/models/card";
 import { dragManager } from "@/modules/board/services/dummiDrag";
 import ChipButton from "./additionals/ChipButton.vue";
@@ -90,14 +90,23 @@ const cancel = () => {
 };
 
 const save = () => {
-  if (!hasChanges.value) return;
+  const trimmedTitle = editedTitle.value.trim();
+  const trimmedDesc = editedDesc.value.trim();
+
+  if (
+    trimmedTitle === props.card.title &&
+    trimmedDesc === props.card.description
+  )
+    return;
+
   emit("update-card", {
     ...props.card,
-    title: editedTitle.value.trim(),
-    description: editedDesc.value.trim(),
+    title: trimmedTitle,
+    description: trimmedDesc,
   });
   isEditing.value = false;
 };
+
 
 const emitRemoveCard = () => {
   emit("remove-card", props.card.id);
@@ -114,9 +123,10 @@ const handleDragEnd = () => {
 };
 
 const onInput = () => {
-  if (titleRef.value) editedTitle.value = titleRef.value.innerText.trim();
-  if (descRef.value) editedDesc.value = descRef.value.innerText.trim();
+  editedTitle.value = titleRef.value?.innerText ?? "";
+  editedDesc.value = descRef.value?.innerText ?? "";
 };
+
 
 const startEditing = () => {
   if (props.disabled || isEditing.value) return;
@@ -131,6 +141,15 @@ const onContextMenu = () => {
   const confirmed = confirm("Delete this card?");
   if (confirmed) emitRemoveCard();
 };
+
+onMounted(() => {
+  if (titleRef.value && !titleRef.value.innerText) {
+    titleRef.value.innerText = "Untitled Card";
+  }
+  if (descRef.value && !descRef.value.innerText) {
+    descRef.value.innerText = "Add Description";
+  }
+});
 </script>
 
 <style scoped lang="scss">
