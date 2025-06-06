@@ -14,6 +14,7 @@ export class Column {
 
   addCard(card: Card) {
     this.cards.push(card)
+    //тут изместный баг, карточки добавляются вразнобой из-за createdAt
   }
 
   removeCard(cardId: string) {

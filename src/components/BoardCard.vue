@@ -140,6 +140,7 @@ const handleDragEnd = () => {
 
 <style scoped lang="scss">
 .board-card {
+  position: relative;
   background: white;
   border-radius: 8px;
   padding: 16px;
@@ -147,8 +148,7 @@ const handleDragEnd = () => {
   user-select: none;
   transition: box-shadow 0.2s;
   overflow: hidden;
-  position: relative;
-  
+  flex-shrink: 0;
   &--disabled {
     opacity: 0.5;
     pointer-events: none;

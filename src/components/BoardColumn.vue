@@ -55,7 +55,12 @@
         @click="toggleSortDirection"
       >
         <template #sub-label>
-          <p v-if="!isEditingDisabledEffective" class="text-gray-3 text-bold text-body-2">{{sortDirection==='desc' ? 'Descending':'Ascending'}}</p>
+          <p
+            v-if="!isEditingDisabledEffective"
+            class="text-gray-3 text-bold text-body-2"
+          >
+            {{ sortDirection === "desc" ? "Descending" : "Ascending" }}
+          </p>
         </template>
       </ChipButton>
 
@@ -173,6 +178,7 @@ watch(
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 0;
   overflow: hidden;
 
   &__header,
@@ -199,32 +205,9 @@ watch(
     margin-top: auto;
   }
 
-  &__title-group {
-    display: flex;
-    align-items: flex-end;
-    gap: 6px;
-  }
-
-  &__title {
-    border-radius: 4px;
-
-    &:focus {
-      outline: 1px dashed var(--gray-2);
-    }
-  }
-
-  &__count {
-    color: var(--gray-3);
-  }
-
-  &__header-actions {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
   &__cards {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
     padding: 12px 16px;
     display: flex;
