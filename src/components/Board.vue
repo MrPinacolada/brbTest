@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useBoardStore } from "@/modules/board/store/useBoardStore";
-import { Card } from "@/modules/board/models/card";
+import { Card } from "../modules/board/models/card";
 import BoardColumn from "./BoardColumn.vue";
 import ChipButton from "./additionals/ChipButton.vue";
 
