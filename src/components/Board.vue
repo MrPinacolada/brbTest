@@ -40,7 +40,6 @@ import ChipButton from "./additionals/ChipButton.vue";
 const board = useBoardStore();
 const { columns, editingDisabled } = storeToRefs(board);
 
-
 function createColumn() {
   board.addColumn("New Column");
 }
@@ -106,7 +105,9 @@ function moveCardBetweenColumns(fromId: string, toId: string, card: Card) {
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
+  width: 100%;
+  max-width: 1400px;
 }
 
 .board-actions {
