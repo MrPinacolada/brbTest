@@ -1,22 +1,15 @@
 import { defineStore } from "pinia";
 import { Column } from "@/modules/board/models/column";
 import { Card } from "@/modules/board/models/card";
+import { getDefaultColumns } from "../utils/defaultBoard";
 
 export const useBoardStore = defineStore("board", {
   state: () => ({
-    columns: [] as Column[],
+    columns: getDefaultColumns(),
     editingDisabled: false,
   }),
 
   actions: {
-    initializeDefault() {
-      this.columns = [
-        new Column("TODO"),
-        new Column("In Progress"),
-        new Column("Done"),
-      ];
-    },
-
     addColumn(title: string) {
       this.columns.push(new Column(title));
     },

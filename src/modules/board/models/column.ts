@@ -6,9 +6,10 @@ export class Column {
   editing: boolean = true
   cards: Card[] = []
 
-  constructor(title: string) {
+  constructor(title: string, cards: Card[] = []) {
     this.id = crypto.randomUUID()
     this.title = title
+    this.cards = cards
   }
 
   addCard(card: Card) {
