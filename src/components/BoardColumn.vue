@@ -44,6 +44,9 @@
       />
 
       <AddNewCard :disabled="isEditingDisabledEffective" @add="addCard" />
+      <p class="text-body-1 text-gray-4 text-regular last-update">
+        {{ formatRelativeTime(column.updatedAt) }}
+      </p>
     </div>
 
     <div class="column__footer">
@@ -82,7 +85,7 @@ import AddNewCard from "./additionals/AddNewCard.vue";
 import ChipButton from "./additionals/ChipButton.vue";
 import { dragManager } from "@/modules/board/services/dummiDrag";
 import { useContentEditableLimiter } from "@/composables/useContentEditableLimiter";
-
+import { formatRelativeTime } from "@/modules/board/utils/formatRelativeTime";
 const props = defineProps<{
   column: Column;
   isEditingDisabled: boolean;
@@ -101,7 +104,7 @@ const emit = defineEmits<{
 }>();
 
 const titleRef = ref<HTMLElement | null>(null);
-useContentEditableLimiter(titleRef, 32)
+useContentEditableLimiter(titleRef, 32);
 const sortDirection = ref<"asc" | "desc">("asc");
 
 function toggleSortDirection() {
@@ -139,7 +142,7 @@ function emitTitleChange() {
     const text = titleRef.value.innerText.trim();
     if (text && text !== props.column.title) {
       emit("update-title", props.column.id, text);
-      titleRef.value.blur()
+      titleRef.value.blur();
     }
   }
 }
@@ -200,8 +203,8 @@ watch(
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
-    &-actions{
-        display: flex;
+    &-actions {
+      display: flex;
       align-items: center;
       gap: 8px;
     }
@@ -223,6 +226,10 @@ watch(
     display: flex;
     flex-direction: column;
     gap: 8px;
+    .last-update {
+      text-align: center;
+      margin-top: 8px;
+    }
   }
 }
 </style>

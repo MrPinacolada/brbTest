@@ -33,6 +33,7 @@ const loadFromLocalStorage = (): {
       });
       const column = new Column(col.title, cards);
       column.id = col.id;
+      column.updatedAt = new Date(col.updatedAt ?? Date.now());
       return column;
     });
 
@@ -92,6 +93,8 @@ export const useBoardStore = defineStore("board", () => {
 
     from.removeCard(card.id);
     to.addCard(card);
+    from.touch();
+    to.touch();
     persist();
   }
 
