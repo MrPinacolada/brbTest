@@ -57,6 +57,7 @@ import { ref, computed, nextTick } from "vue";
 import { Card } from "@/modules/board/models/card";
 import { dragManager } from "@/modules/board/services/dummiDrag";
 import ChipButton from "./additionals/ChipButton.vue";
+import { useContentEditableLimiter } from "@/composables/useContentEditableLimiter";
 
 const props = defineProps<{
   card: Card;
@@ -77,6 +78,9 @@ const editedDesc = ref(props.card.description);
 
 const titleRef = ref<HTMLElement | null>(null);
 const descRef = ref<HTMLElement | null>(null);
+
+useContentEditableLimiter(titleRef, 100)
+useContentEditableLimiter(descRef, 150)
 
 const hasChanges = computed(() => {
   return (

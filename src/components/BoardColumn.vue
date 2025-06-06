@@ -81,6 +81,7 @@ import BoardCard from "./BoardCard.vue";
 import AddNewCard from "./additionals/AddNewCard.vue";
 import ChipButton from "./additionals/ChipButton.vue";
 import { dragManager } from "@/modules/board/services/dummiDrag";
+import { useContentEditableLimiter } from "@/composables/useContentEditableLimiter";
 
 const props = defineProps<{
   column: Column;
@@ -100,6 +101,7 @@ const emit = defineEmits<{
 }>();
 
 const titleRef = ref<HTMLElement | null>(null);
+useContentEditableLimiter(titleRef, 32)
 const sortDirection = ref<"asc" | "desc">("asc");
 
 function toggleSortDirection() {
@@ -197,6 +199,7 @@ watch(
     justify-content: space-between;
     align-items: center;
     gap: 12px;
+    flex-wrap: wrap;
     &-actions{
         display: flex;
       align-items: center;
