@@ -1,1 +1,62 @@
+// .font {
+//     &--base {
+//         font-family: Inter;
+//         font-size: 14px;
+//         // font-weight: 600;
+//         letter-spacing: 0%;
+//     }
+//     &--xl {
+//         font-family: Inter;
+//         font-size: 14px;
+//         // font-weight: 500;
+//         letter-spacing: 0%;
+//     }
+//     &--md {
+//         font-family: Inter;
+//         font-size: 13px;
+//         // font-weight: 600;
+//         letter-spacing: 0%;
+//     }
+// }
 
+$colors: (
+  gray-1: var(--gray-1),
+  gray-2: var(--gray-2),
+  gray-3: var(--gray-3),
+  gray-4: var(--gray-4),
+  black-base: var(--black-base),
+  orange-1: var(--orange-1),
+  blue-1: var(--blue-1),
+  red-1: var(--red-1),
+  purple-1: var(--purple-1),
+  green-1: var(--green-1),
+);
+
+$weights: (
+  regular: 500,
+  bold: 600
+);
+
+$sizes: (
+  body-1: 14px,
+  body-2: 13px,
+);
+
+@each $name, $color in $colors {
+  .text-#{$name} {
+    color: $color;
+  }
+}
+
+@each $name, $weight in $weights {
+  .text-#{$name} {
+    font-weight: $weight;
+  }
+}
+
+@each $name, $size in $sizes {
+  .text-#{$name} {
+    font-size: $size;
+    line-height: normal;
+  }
+}
