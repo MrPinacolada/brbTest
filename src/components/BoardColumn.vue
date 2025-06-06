@@ -5,8 +5,7 @@
         <span
           class="column__title text-bold text-body-2 text-gray-3"
           :contenteditable="!isEditingDisabledEffective"
-          @keydown.enter.prevent
-          @blur="emitTitleChange"
+          @keydown.enter.prevent="emitTitleChange"
           ref="titleRef"
         >
           {{ column.title }}
@@ -144,6 +143,7 @@ function emitTitleChange() {
     const text = titleRef.value.innerText.trim();
     if (text && text !== props.column.title) {
       emit("update-title", props.column.id, text);
+      titleRef.value.blur()
     }
   }
 }
@@ -181,6 +181,14 @@ watch(
   min-height: 0;
   overflow: hidden;
 
+  &__title {
+    &-group {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+  }
+
   &__header,
   &__footer {
     position: sticky;
@@ -193,8 +201,13 @@ watch(
     top: 0;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     gap: 12px;
+    &-actions{
+        display: flex;
+      align-items: center;
+      gap: 8px;
+    }
   }
 
   &__footer {

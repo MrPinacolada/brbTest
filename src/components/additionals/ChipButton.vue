@@ -11,7 +11,7 @@
       alt="img"
     />
     <p class="text-black-base text-bold text-body-2">{{ props.label }}</p>
-    <slot name="sub-label"/>
+    <slot name="sub-label" />
   </button>
 </template>
 
@@ -48,6 +48,7 @@ const handleClick = () => {
   background: white;
   width: fit-content;
   max-width: 140px;
+  transition: scale 0.3s ease;
   p {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -62,6 +63,9 @@ const handleClick = () => {
   &--disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+  &:hover {
+    scale: 1.04;
   }
 }
 </style>

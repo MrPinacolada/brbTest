@@ -1,15 +1,5 @@
 <template>
   <div class="board-wrapper">
-    <div class="board-actions">
-      <ChipButton label="New Column" @click="createColumn" />
-      <ChipButton label="Shuffle Columns" @click="shuffleColumns" />
-      <ChipButton label="Shuffle Cards" @click="shuffleCards" />
-      <ChipButton
-        :label="editingDisabled ? 'Enable Editing' : 'Disable Editing'"
-        @click="toggleEditing"
-      />
-    </div>
-
     <div class="board-columns">
       <BoardColumn
         v-for="col in columns"
@@ -25,6 +15,19 @@
         @sort-cards="sortColumnCards"
         @drop-card="moveCardBetweenColumns"
       />
+    </div>
+    <div class="board-actions">
+      <div class="actions">
+        <ChipButton label="New Column" icon="add" @click="createColumn" />
+        <ChipButton label="Shuffle Columns" icon="shuffle" @click="shuffleColumns" />
+        <ChipButton label="Shuffle Cards" icon="shuffle" @click="shuffleCards" />
+        <ChipButton
+          :label="editingDisabled ? 'Enable Editing' : 'Disable Editing'"
+          icon="pause"
+          @click="toggleEditing"
+        />
+      </div>
+      <p class="fancy-title text-bold text-body-1">Board Actions</p>
     </div>
   </div>
 </template>
@@ -91,7 +94,6 @@ function clearColumnCards(columnId: string) {
 
 function sortColumnCards(columnId: string) {
   const col = columns.value.find((c) => c.id === columnId);
-  console.log('col: ', col);
   if (col)
     col.cards.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 }
@@ -109,19 +111,37 @@ function moveCardBetweenColumns(fromId: string, toId: string, card: Card) {
   gap: 24px;
   width: 100%;
   max-width: 1400px;
-  height: 100%
+  height: 100%;
 }
 
 .board-actions {
+  width: 100%;
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: column;
+  text-align: center;
+  gap: 12px;
+  .actions {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+  .fancy-title {
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.3),
+      rgba(0, 0, 0, 0.12)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
 .board-columns {
   display: flex;
   gap: 16px;
   overflow-x: auto;
-  height: 100%
+  height: 100%;
 }
 </style>

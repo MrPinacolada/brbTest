@@ -9,56 +9,46 @@
     :draggable="!props.disabled"
     @dragstart="!props.disabled && handleDragStart()"
     @dragend="!props.disabled && handleDragEnd()"
-    @contextmenu.prevent="!props.disabled && emitRemoveCard()"
+    @contextmenu.prevent="onContextMenu"
     @dblclick="startEditing"
   >
-    <Transition name="fade-slide" mode="out-in">
-      <template v-if="!isEditing">
-        <div class="board-card__content" key="view">
-          <p class="board-card__title">
-            {{ card.title || "Untitled Card" }}
-          </p>
-          <p v-if="card.description" class="board-card__description">
-            {{ card.description }}
-          </p>
-          <p
-            v-else
-            class="board-card__description board-card__description--empty"
-          >
-            Add Description
-          </p>
-        </div>
-      </template>
+    <div class="board-card__content" key="view">
+      <p
+        class="board-card__title text-bold text-body-1 text-black-base"
+        :contenteditable="isEditing && !props.disabled"
+        ref="titleRef"
+        @input="onInput"
+        @keydown.enter.prevent="save"
+        @focus="startEditing"
+      >
+        {{ editedTitle || "Untitled Card" }}
+      </p>
+      <p
+        class="board-card__description text-regular text-body-1 text-gray-3"
+        :class="{ 'board-card__description--empty': !editedDesc }"
+        :contenteditable="isEditing && !props.disabled"
+        ref="descRef"
+        @input="onInput"
+        @keydown.enter.prevent
+        @focus="startEditing"
+      >
+        {{ editedDesc || "Add Description" }}
+      </p>
 
-      <template v-else>
-        <div class="board-card__edit" key="edit">
-          <div class="board-card__editable-fields">
-            <div
-              class="board-card__editable board-card__title"
-              :contenteditable="!props.disabled"
-              ref="titleRef"
-              @input="onInput"
-              @keydown.enter.prevent="save"
-            >
-              {{ editedTitle }}
-            </div>
-            <div
-              class="board-card__editable board-card__description"
-              :contenteditable="!props.disabled"
-              ref="descRef"
-              @input="onInput"
-              @keydown.enter.prevent
-            >
-              {{ editedDesc }}
-            </div>
-          </div>
-          <div class="board-card__actions">
-            <button @click="save" :disabled="!hasChanges">Save Changes</button>
-            <button @click="cancel">Cancel</button>
-          </div>
-        </div>
-      </template>
-    </Transition>
+      <div v-if="isEditing" class="board-card__actions">
+        <ChipButton
+          label="Save Changes"
+          :icon="'save'"
+          :disabled="!hasChanges"
+          @click="save"
+        />
+        <ChipButton
+          label="Cancel"
+          icon="stop"
+          @click="cancel"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -66,6 +56,7 @@
 import { ref, computed, nextTick } from "vue";
 import { Card } from "@/modules/board/models/card";
 import { dragManager } from "@/modules/board/services/dummiDrag";
+import ChipButton from "./additionals/ChipButton.vue";
 
 const props = defineProps<{
   card: Card;
@@ -93,19 +84,6 @@ const hasChanges = computed(() => {
     editedDesc.value.trim() !== props.card.description
   );
 });
-
-const onInput = () => {
-  if (titleRef.value) editedTitle.value = titleRef.value.innerText;
-  if (descRef.value) editedDesc.value = descRef.value.innerText;
-};
-
-const startEditing = () => {
-  if (props.disabled) return;
-  isEditing.value = true;
-  nextTick(() => {
-    titleRef.value?.focus();
-  });
-};
 
 const cancel = () => {
   editedTitle.value = props.card.title;
@@ -135,6 +113,25 @@ const handleDragStart = () => {
 const handleDragEnd = () => {
   isDragging.value = false;
   dragManager.reset();
+};
+
+const onInput = () => {
+  if (titleRef.value) editedTitle.value = titleRef.value.innerText.trim();
+  if (descRef.value) editedDesc.value = descRef.value.innerText.trim();
+};
+
+const startEditing = () => {
+  if (props.disabled || isEditing.value) return;
+  isEditing.value = true;
+  editedTitle.value = props.card.title;
+  editedDesc.value = props.card.description;
+  nextTick(() => titleRef.value?.focus());
+};
+
+const onContextMenu = () => {
+  if (props.disabled) return;
+  const confirmed = confirm("Delete this card?");
+  if (confirmed) emitRemoveCard();
 };
 </script>
 
@@ -176,21 +173,10 @@ const handleDragEnd = () => {
     }
   }
 
-  &__title {
-    font-weight: bold;
-    font-size: 14px;
-    color: var(--black-base);
-    line-height: 1.4;
-  }
-
   &__description {
-    margin-top: 6px;
-    font-size: 14px;
-    line-height: 1.4;
-    color: var(--gray-3);
-
+    margin-top: 8px;
     &--empty {
-      font-weight: bold;
+      font-weight: 600;
     }
   }
 
@@ -223,16 +209,5 @@ const handleDragEnd = () => {
       font-size: 13px;
     }
   }
-}
-
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: all 0.2s ease;
-}
-
-.fade-slide-enter-from,
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateY(4px);
 }
 </style>
