@@ -91,6 +91,7 @@ function clearColumnCards(columnId: string) {
 
 function sortColumnCards(columnId: string) {
   const col = columns.value.find((c) => c.id === columnId);
+  console.log('col: ', col);
   if (col)
     col.cards.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 }
@@ -108,6 +109,7 @@ function moveCardBetweenColumns(fromId: string, toId: string, card: Card) {
   gap: 24px;
   width: 100%;
   max-width: 1400px;
+  height: 100%
 }
 
 .board-actions {
@@ -120,5 +122,6 @@ function moveCardBetweenColumns(fromId: string, toId: string, card: Card) {
   display: flex;
   gap: 16px;
   overflow-x: auto;
+  height: 100%
 }
 </style>

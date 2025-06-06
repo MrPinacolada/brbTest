@@ -1,5 +1,9 @@
 <template>
-  <button class="chip-button" v-bind="$attrs">
+  <button
+    class="chip-button"
+    :class="[props.disabled ? `chip-button--disabled` : '']"
+    @click="handleClick"
+  >
     <img
       v-if="props.icon"
       :src="getIconSrc(props.icon)"
@@ -7,6 +11,7 @@
       alt="img"
     />
     <p class="text-black-base text-bold text-body-2">{{ props.label }}</p>
+    <slot name="sub-label"/>
   </button>
 </template>
 
@@ -14,13 +19,20 @@
 interface Props {
   label: string;
   icon?: string;
+  disabled?: boolean;
 }
 
 const props = defineProps<Props>();
+const emit = defineEmits(["click"]);
 
 const getIconSrc = (name?: string): string | undefined => {
   if (!name) return undefined;
   return new URL(`../../assets/icons/${name}.svg`, import.meta.url).href;
+};
+
+const handleClick = () => {
+  if (props.disabled) return;
+  emit("click");
 };
 </script>
 
@@ -46,6 +58,10 @@ const getIconSrc = (name?: string): string | undefined => {
     max-width: 13.33px;
     max-height: 13.33px;
     margin-bottom: -2px;
+  }
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
 </style>

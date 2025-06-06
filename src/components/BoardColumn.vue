@@ -1,6 +1,5 @@
 <template>
   <div class="column" @dragover.prevent @drop="handleDrop">
-    <!-- Header -->
     <div class="column__header">
       <div class="column__title-group">
         <span
@@ -19,17 +18,24 @@
 
       <div class="column__header-actions">
         <ChipButton
-          :label="isEditingDisabledEffective ?'Unlock Column': 'Disable Editing' "
+          :label="
+            isEditingDisabledEffective ? 'Unlock Column' : 'Disable Editing'
+          "
           :icon="isEditingDisabledEffective ? 'play' : 'pause'"
           @click="toggleEditing"
         />
-        <ChipButton label="Delete Column" icon="stop" @click="emitDelete" />
+        <ChipButton
+          label="Delete Column"
+          :disabled="isEditingDisabledEffective"
+          icon="stop"
+          @click="emitDelete"
+        />
       </div>
     </div>
 
     <div class="column__cards">
       <BoardCard
-        v-for="card in column.cards"
+        v-for="card in sortedCards"
         :key="card.id"
         :card="card"
         :columnId="column.id"
@@ -37,13 +43,28 @@
         @update-card="updateCard"
         @remove-card="removeCard"
       />
+
+      <AddNewCard :disabled="isEditingDisabledEffective" @add="addCard" />
     </div>
 
-    <AddNewCard :disabled="isEditingDisabledEffective" @add="addCard" />
-
     <div class="column__footer">
-      <ChipButton label="Sort" @click="$emit('sort-cards', column.id)" />
-      <ChipButton label="Clear All" @click="clearCards" />
+      <ChipButton
+        label="Sort"
+        :icon="sortDirection === 'asc' ? 'sortA' : 'sortD'"
+        :disabled="isEditingDisabledEffective"
+        @click="toggleSortDirection"
+      >
+        <template #sub-label>
+          <p v-if="!isEditingDisabledEffective" class="text-gray-3 text-bold text-body-2">{{sortDirection==='desc' ? 'Descending':'Ascending'}}</p>
+        </template>
+      </ChipButton>
+
+      <ChipButton
+        label="Clear All"
+        :disabled="isEditingDisabledEffective"
+        icon="clear"
+        @click="clearCards"
+      />
     </div>
   </div>
 </template>
@@ -75,14 +96,26 @@ const emit = defineEmits<{
 }>();
 
 const titleRef = ref<HTMLElement | null>(null);
+const sortDirection = ref<"asc" | "desc">("asc");
+const sortedCards = computed(() => {
+  return [...props.column.cards].sort((a, b) => {
+    const aTime = a.createdAt.getTime();
+    const bTime = b.createdAt.getTime();
+    return sortDirection.value === "asc" ? aTime - bTime : bTime - aTime;
+  });
+});
 
 const localEditgDisabled = ref(props.isEditingDisabled);
 const isEditingDisabledEffective = computed(() => {
-  return props.isEditingDisabled || localEditgDisabled.value
-})
+  return props.isEditingDisabled || localEditgDisabled.value;
+});
 
 function updateCard(card: Card) {
   emit("update-card", props.column.id, card);
+}
+
+function toggleSortDirection() {
+  sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
 }
 
 function removeCard(cardId: string) {
@@ -135,18 +168,35 @@ watch(
 .column {
   background: var(--gray-1);
   border-radius: 12px;
-  padding: 16px;
-  min-width: 280px;
-  max-width: 448px;
+  padding: 0;
+  width: 448px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  height: 100%;
+  overflow: hidden;
+
+  &__header,
+  &__footer {
+    position: sticky;
+    background-color: var(--gray-1);
+    z-index: 2;
+    padding: 16px;
+  }
 
   &__header {
+    top: 0;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 12px;
+  }
+
+  &__footer {
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: auto;
   }
 
   &__title-group {
@@ -174,17 +224,12 @@ watch(
   }
 
   &__cards {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-  }
-
-  &__footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 4px;
-    border-top: 1px solid var(--gray-2);
+    gap: 8px;
   }
 }
 </style>

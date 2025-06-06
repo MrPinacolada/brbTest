@@ -9,7 +9,9 @@
     @dblclick="startEditing"
   >
     <template v-if="!isEditing">
-      <p class="text-bold text-black-base text-body-1">{{ card.title || "Untitled Card" }}</p>
+      <p class="text-bold text-black-base text-body-1">
+        {{ card.title || "Untitled Card" }}
+      </p>
       <p v-if="card.description">{{ card.description }}</p>
     </template>
 
@@ -17,7 +19,7 @@
       <div class="editable-fields">
         <div
           class="editable text-bold text-black-base text-body-1"
-          contenteditable
+          :contenteditable="!props.disabled"
           ref="titleRef"
           @input="onInput"
           @keydown.enter.prevent="save"
@@ -26,7 +28,7 @@
         </div>
         <div
           class="editable text-bold text-black-base text-body-1"
-          contenteditable
+          :contenteditable="!props.disabled"
           ref="descRef"
           @input="onInput"
           @keydown.enter.prevent
@@ -50,6 +52,7 @@ import { dragManager } from "@/modules/board/services/dummiDrag";
 const props = defineProps<{
   card: Card;
   columnId: string;
+  disabled?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -79,6 +82,7 @@ const onInput = () => {
 };
 
 const startEditing = () => {
+  if (props.disabled) return;
   isEditing.value = true;
   nextTick(() => {
     titleRef.value?.focus();
@@ -122,7 +126,6 @@ const handleDragEnd = () => {
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 10px;
-  margin-bottom: 8px;
   cursor: grab;
   transition: box-shadow 0.2s;
   user-select: none;
@@ -135,8 +138,6 @@ const handleDragEnd = () => {
   &:hover {
     background: #f9f9f9;
   }
-
-  
 
   .editable-fields {
     display: flex;
@@ -155,8 +156,6 @@ const handleDragEnd = () => {
       border-color: #999;
     }
   }
-
-  
 
   .actions {
     display: flex;

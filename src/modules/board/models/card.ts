@@ -8,6 +8,12 @@ export class Card {
     this.id = crypto.randomUUID()
     this.title = title
     this.description = description
-    this.createdAt = new Date()
+
+    //для тестов
+    const offsetMinutes = Math.floor(Math.random() * 17) - 2
+    const offsetMs = offsetMinutes * 60 * 1000
+    //для тестов
+
+    this.createdAt = new Date(Date.now() + offsetMs)
   }
 }
