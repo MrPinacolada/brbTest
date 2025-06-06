@@ -42,5 +42,15 @@ export const useBoardStore = defineStore("board", {
     clearAllCards() {
       this.columns.forEach((col) => (col.cards = []));
     },
+
+    moveCard(card: Card, fromColumnId: string, toColumnId: string) {
+      if (fromColumnId === toColumnId) return;
+      const from = this.columns.find((c) => c.id === fromColumnId);
+      const to = this.columns.find((c) => c.id === toColumnId);
+      if (!from || !to) return;
+
+      from.removeCard(card.id);
+      to.addCard(card);
+    },
   },
 });
