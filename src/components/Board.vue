@@ -19,8 +19,16 @@
     <div class="board-actions">
       <div class="actions">
         <ChipButton label="New Column" icon="add" @click="createColumn" />
-        <ChipButton label="Shuffle Columns" icon="shuffle" @click="shuffleColumns" />
-        <ChipButton label="Shuffle Cards" icon="shuffle" @click="shuffleCards" />
+        <ChipButton
+          label="Shuffle Columns"
+          icon="shuffle"
+          @click="shuffleColumns"
+        />
+        <ChipButton
+          label="Shuffle Cards"
+          icon="shuffle"
+          @click="shuffleCards"
+        />
         <ChipButton
           :label="editingDisabled ? 'Enable Editing' : 'Disable Editing'"
           icon="pause"
@@ -44,6 +52,10 @@ const board = useBoardStore();
 const { columns, editingDisabled } = storeToRefs(board);
 
 function createColumn() {
+  if (columns.value.length >= 4) {
+    alert(`No more than 4 columns`);
+    return;
+  }
   board.addColumn("New Column");
 }
 

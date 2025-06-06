@@ -34,7 +34,7 @@
 
     <div class="column__cards">
       <BoardCard
-        v-for="card in sortedCards"
+        v-for="card in props.column.cards"
         :key="card.id"
         :card="card"
         :columnId="column.id"
@@ -101,13 +101,11 @@ const emit = defineEmits<{
 
 const titleRef = ref<HTMLElement | null>(null);
 const sortDirection = ref<"asc" | "desc">("asc");
-const sortedCards = computed(() => {
-  return [...props.column.cards].sort((a, b) => {
-    const aTime = a.createdAt.getTime();
-    const bTime = b.createdAt.getTime();
-    return sortDirection.value === "asc" ? aTime - bTime : bTime - aTime;
-  });
-});
+
+function toggleSortDirection() {
+  sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
+  props.column.sortCards(sortDirection.value);
+}
 
 const localEditgDisabled = ref(props.isEditingDisabled);
 const isEditingDisabledEffective = computed(() => {
@@ -116,10 +114,6 @@ const isEditingDisabledEffective = computed(() => {
 
 function updateCard(card: Card) {
   emit("update-card", props.column.id, card);
-}
-
-function toggleSortDirection() {
-  sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
 }
 
 function removeCard(cardId: string) {

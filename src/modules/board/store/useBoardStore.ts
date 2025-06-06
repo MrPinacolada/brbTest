@@ -27,9 +27,7 @@ export const useBoardStore = defineStore("board", {
     },
 
     shuffleCards() {
-      this.columns.forEach((col) => {
-        col.cards = [...col.cards].sort(() => Math.random() - 0.5);
-      });
+      this.columns.forEach((col) => col.shuffleCards());
     },
 
     clearAllCards() {
