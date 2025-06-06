@@ -7,8 +7,8 @@
           :contenteditable="!isEditingDisabledEffective"
           @keydown.enter.prevent="emitTitleChange"
           ref="titleRef"
+          v-text="column.title || 'New Column'"
         >
-          {{ column.title }}
         </span>
         <span class="column__count text-black-pale text-bold text-body-2">
           {{ column.cards.length }}

@@ -20,9 +20,8 @@
         @input="onInput"
         @keydown.enter.prevent="save"
         @focus="startEditing"
-      >
-        {{ editedTitle || "Untitled Card" }}
-      </p>
+        v-text="editedTitle || 'Untitled Card'"
+      ></p>
       <p
         class="board-card__description text-regular text-body-1 text-gray-3"
         :class="{ 'board-card__description--empty': !editedDesc }"
@@ -31,9 +30,8 @@
         @input="onInput"
         @keydown.enter.prevent
         @focus="startEditing"
-      >
-        {{ editedDesc || "Add Description" }}
-      </p>
+        v-text="editedDesc || 'Add Description'"
+      ></p>
 
       <div v-if="isEditing" class="board-card__actions">
         <ChipButton
@@ -42,11 +40,7 @@
           :disabled="!hasChanges"
           @click="save"
         />
-        <ChipButton
-          label="Cancel"
-          icon="stop"
-          @click="cancel"
-        />
+        <ChipButton label="Cancel" icon="stop" @click="cancel" />
       </div>
     </div>
   </div>
@@ -79,8 +73,8 @@ const editedDesc = ref(props.card.description);
 const titleRef = ref<HTMLElement | null>(null);
 const descRef = ref<HTMLElement | null>(null);
 
-useContentEditableLimiter(titleRef, 100)
-useContentEditableLimiter(descRef, 150)
+useContentEditableLimiter(titleRef, 100);
+useContentEditableLimiter(descRef, 150);
 
 const hasChanges = computed(() => {
   return (
